@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Heart } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function CallToAction() {
     return (
@@ -39,6 +40,7 @@ export default function CallToAction() {
                     <div className="flex flex-wrap justify-center gap-4">
                         <a href="#calculator">
                             <Button
+                                size="lg"
                                 className="bg-emerald-500 hover:bg-emerald-400 text-[#0A2F1F] font-semibold rounded-full px-10 h-14 text-base transition-all hover:shadow-[0_0_30px_rgba(52,211,153,0.3)]"
                             >
                                 Calculate My Savings
@@ -47,6 +49,8 @@ export default function CallToAction() {
                         </a>
                         <a href="#thermostats">
                             <Button
+                                size="lg"
+                                variant="outline"
                                 className="border-white/30 text-white hover:bg-white/10 rounded-full px-10 h-14 text-base"
                             >
                                 Find My Thermostat
