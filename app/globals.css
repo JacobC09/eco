@@ -8,6 +8,13 @@ button:hover {
     cursor: pointer;
 }
 
+@theme {
+    --color-dark:#0A2F1F;
+    --color-light:#10b981;
+    --color-extra-light:#d1fae5;
+    --color-bg:#FAFAF7;
+}
+
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);

@@ -38,9 +38,9 @@ export default function HeroSection() {
                     alt="Winter nature landscape"
                     className="w-full h-full object-cover scale-110"
                 />
-                <div className="absolute inset-0 bg-linear-to-r from-[#0A2F1F]/95 via-[#0A2F1F]/80 to-[#0A2F1F]/55" />
-                <div className="absolute inset-0 bg-[#0A2F1F]/40" />
-                <div className="absolute inset-0 bg-linear-to-t from-[#0A2F1F]/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-r from-dark/95 via-dark/80 to-dark/55" />
+                <div className="absolute inset-0 bg-dark/40" />
+                <div className="absolute inset-0 bg-linear-to-t from-dark/70 via-transparent to-transparent" />
             </motion.div>
 
         
@@ -52,7 +52,7 @@ export default function HeroSection() {
                     variants={containerVariants}
                     initial="hidden"
                     animate="show"
-                    className="max-w-2xl"
+                    className="max-w-4xl"
                 >
                     {/* Tag */}
                     <motion.div variants={itemVariants} className="flex items-center gap-3 mb-8">
@@ -64,14 +64,14 @@ export default function HeroSection() {
                             <Thermometer className="w-5 h-5 text-emerald-400" />
                         </motion.div>
                         <div>
-                            <span className="text-emerald-400 text-xs font-semibold tracking-[0.2em] uppercase block">Smart Thermostat Initiative</span>
-                            <span className="text-white/40 text-xs">A Canadian Eco-Club School Project</span>
+                            <span className="text-emerald-400 text-xs font-semibold tracking-[0.2em] uppercase block">Thermostat Awareness Initiative</span>
+                            <span className="text-white/40 text-xs">Generation Green Project</span>
                         </div>
                     </motion.div>
 
                     {/* Headline */}
                     <motion.h1 variants={itemVariants} className="text-6xl md:text-[6.5rem] font-bold text-white leading-none tracking-tight mb-6">
-                        Small
+                        Sleep
                         <br />
                         <motion.span
                             className="text-transparent bg-clip-text bg-linear-to-r from-emerald-300 via-teal-200 to-emerald-300"
@@ -79,38 +79,38 @@ export default function HeroSection() {
                             transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
                             style={{ backgroundSize: "200% 200%" }}
                         >
-                            Change.
+                            Cold.
                         </motion.span>
                         <br />
-                        <span className="text-white/90">Big Impact.</span>
+                        <span className="text-white/90">Save the Planet.</span>
                     </motion.h1>
 
                     <motion.p variants={itemVariants} className="text-lg md:text-xl text-white/65 leading-relaxed mb-3 max-w-xl">
-                        Heating accounts for <strong className="text-white/90">63% of Canadian home energy use</strong>.
-                        By programming your thermostat to lower at night, you save money, sleep better, and fight climate change — all at once.
+                        Space heating accounts for <strong className="text-white/90">64% of Canadian home energy use</strong>.
+                        By programming your thermostat to lower at night, you save money, sleep better, and fight climate change all at once.
                     </motion.p>
 
                     <motion.p variants={itemVariants} className="text-sm text-white/40 mb-10 max-w-lg">
-                        Most homes already have a programmable thermostat — most families just don't know how to use it. We're changing that.
+                        Most homes actually already have a programmable thermostat, however most families just don't know how to use it. <strong>We're changing that.</strong>
                     </motion.p>
 
                     <motion.div variants={itemVariants} className="flex flex-wrap gap-3 mb-16">
                         <a href="#problem">
                             <motion.button
                                 whileTap={{ scale: 0.97 }}
-                                className="bg-emerald-500 hover:bg-emerald-400 text-[#0A2F1F] font-bold rounded-full px-8 py-3.5 text-sm transition-colors shadow-lg shadow-emerald-500/20"
+                                className="bg-emerald-500 hover:bg-emerald-400 text-dark font-bold rounded-full px-8 py-3.5 text-sm transition-colors shadow-lg shadow-emerald-500/20"
                             >
-                                Learn Why It Matters ↓
+                                Learn More
                             </motion.button>
                         </a>
                         <a href="#calculator">
                             <motion.button whileTap={{ scale: 0.97 }} className="border border-white/25 text-white hover:bg-white/10 rounded-full px-8 py-3.5 text-sm transition-all font-medium">
-                                Calculate My Savings
+                                Calculate Savings
                             </motion.button>
                         </a>
                         <a href="#thermostats">
                             <motion.button whileTap={{ scale: 0.97 }} className="border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 rounded-full px-8 py-3.5 text-sm transition-all font-medium">
-                                Find My Thermostat
+                                Find A Thermostat
                             </motion.button>
                         </a>
                     </motion.div>
@@ -120,14 +120,14 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Scroll cue */}
-            {/* <motion.div
-                className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            <motion.div
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
             >
                 <span className="text-white/25 text-xs tracking-widest uppercase">Scroll</span>
                 <ChevronDown className="w-5 h-5 text-white/30" />
-            </motion.div> */}
+            </motion.div>
 
             {/* Wave SVG transition instead of gradient */}
             <div className="absolute bottom-0 left-0 right-0 z-10">

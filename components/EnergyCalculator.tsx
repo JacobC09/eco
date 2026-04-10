@@ -36,7 +36,16 @@ const DEFAULTS: EnergyCalculatorValues = {
     vacation_setpoint: 13,
 };
 
-function calcSavings({ home_size, setback_temp, setback_hours, heating_months, annual_bill, vacation_days, vacation_setpoint }: {
+
+function calcSavings({
+    home_size,
+    setback_temp,
+    setback_hours,
+    heating_months,
+    annual_bill,
+    vacation_days,
+    vacation_setpoint
+}: {
     home_size: number;
     setback_temp: number;
     setback_hours: number;
@@ -45,27 +54,60 @@ function calcSavings({ home_size, setback_temp, setback_hours, heating_months, a
     vacation_days: number;
     vacation_setpoint: number;
 }) {
-    const savingsPct = setback_temp * (setback_hours / 24) * (heating_months / 12) * 8;
-    const dollarSavings = (savingsPct / 100) * annual_bill;
-    const baselineCO2 = (home_size / 1800) * 4500;
-    const co2Savings = (savingsPct / 100) * baselineCO2;
-    const trees = Math.round(co2Savings / 21);
-    const canadaWide = co2Savings * 14_000_000 / 1_000_000;
+    // 1. Establish Environmental Baseline
+    const baselineIndoorTemp = 21; 
+    const avgOutdoorTemp = 15 - (heating_months * 2.5); 
+    const averageDeltaT = Math.max(baselineIndoorTemp - avgOutdoorTemp, 10); 
 
-    // Vacation savings: normal setpoint assumed 21°C, vacation at vacation_setpoint
-    const tempDiff = 21 - vacation_setpoint;
-    const vacSavingsPct = tempDiff * 0.05 * (vacation_days / 365) * 100;
-    const vacDollars = (vacSavingsPct / 100) * annual_bill;
-    const vacCO2 = (vacSavingsPct / 100) * baselineCO2;
+    // 2. Nightly Setback (Physics-Based Formula)
+    const theoreticalSavingsPct = (setback_temp * setback_hours) / (averageDeltaT * 24);
+
+    // Thermal mass penalty: Reheating takes energy. 
+    // Larger homes have more mass, making the morning recovery run longer.
+    const basePenalty = 0.85; // Baseline for an average 1800 sq ft home
+    const sizeRatio = home_size / 1800;
+    
+    // Scales the penalty based on home size (caps between 70% and 95% efficiency)
+    const recoveryPenalty = Math.max(0.70, Math.min(0.95, basePenalty - (sizeRatio - 1) * 0.05));
+    
+    const savingsPct = theoreticalSavingsPct * recoveryPenalty * 100;
+    const dollarSavings = (savingsPct / 100) * annual_bill;
+
+    // 3. Carbon Emissions (Empirically Derived)
+    const estimatedGasVolume = annual_bill / 0.55; 
+    const gasEmissionFactor = 1.93; 
+    const baselineCO2 = estimatedGasVolume * gasEmissionFactor;
+
+    const co2Savings = (savingsPct / 100) * baselineCO2;
+    const trees = Math.round(co2Savings / 21); 
+
+    // 4. Vacation Mode Savings
+    const vacationTempDiff = Math.max(0, baselineIndoorTemp - vacation_setpoint);
+    const heatingSeasonDays = heating_months * 30.4;
+    const validVacationDays = Math.min(vacation_days, heatingSeasonDays);
+
+    // Continuous setback has better efficiency (no daily recovery cycle) -> fixed 0.90 penalty
+    const vacationSavingsPct = (vacationTempDiff / averageDeltaT) * (validVacationDays / heatingSeasonDays) * 0.90 * 100;
+
+    const vacDollars = (vacationSavingsPct / 100) * annual_bill;
+    const vacCO2 = (vacationSavingsPct / 100) * baselineCO2;
+
+    // 5. National Scale
+    const totalCO2Saved = co2Savings + vacCO2;
+    const canadaWide = (totalCO2Saved * 14_000_000) / 1_000_000_000;
 
     return {
         pct: Math.round(savingsPct * 10) / 10,
         dollars: Math.round(dollarSavings),
+        
         co2: Math.round(co2Savings),
         trees,
-        canadaWide: Math.round(canadaWide),
+        
+        canadaWide: Math.round(canadaWide * 10) / 10, 
+        
         vacDollars: Math.round(vacDollars),
         vacCO2: Math.round(vacCO2),
+        
         totalDollars: Math.round(dollarSavings + vacDollars),
         totalCO2: Math.round(co2Savings + vacCO2),
     };
@@ -90,11 +132,11 @@ export default function EnergyCalculator() {
     const result = calcSavings(values);
 
     return (
-        <section id="calculator" className="py-24 px-6 md:px-12 bg-[#FAFAF7]">
+        <section id="calculator" className="py-24 px-6 md:px-12 bg-bg">
             <div className="max-w-7xl mx-auto">
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
                     <span className="text-emerald-600 text-sm font-medium tracking-[0.2em] uppercase">Your Impact</span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-[#0A2F1F] mt-3 tracking-tight">Thermostat Savings Calculator</h2>
+                    <h2 className="text-3xl md:text-5xl font-bold text-dark mt-3 tracking-tight">Thermostat Savings Calculator</h2>
                     <p className="text-gray-500 mt-4 max-w-xl mx-auto leading-relaxed">
                         Enter your home details to see exactly how much energy, money, and CO₂ you'd save by programming a nightly setback — plus an optional vacation add-on.
                     </p>
@@ -112,21 +154,21 @@ export default function EnergyCalculator() {
                                                 <input.icon className="w-4 h-4 text-emerald-600" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-[#0A2F1F]">{input.label}</p>
+                                                <p className="text-sm font-semibold text-dark">{input.label}</p>
                                                 <p className="text-xs text-gray-400">{input.description}</p>
                                             </div>
                                         </div>
                                         <div className="text-right shrink-0 ml-4">
-                                            <span className="text-lg font-bold text-[#0A2F1F]">{input.key === "annual_bill" ? "$" : ""}{values[input.key].toLocaleString()}</span>
+                                            <span className="text-lg font-bold text-dark">{input.key === "annual_bill" ? "$" : ""}{values[input.key].toLocaleString()}</span>
                                             <span className="text-xs text-gray-400 ml-1">{input.unit}</span>
                                         </div>
                                     </div>
-                                    <Slider 
-                                        value={[values[input.key]]} 
-                                        min={input.min} 
-                                        max={input.max} 
+                                    <Slider
+                                        value={[values[input.key]]}
+                                        min={input.min}
+                                        max={input.max}
                                         step={input.step}
-                                        onValueChange={(v) => setValues({...values, [input.key]: v})}
+                                        onValueChange={(v) => setValues({ ...values, [input.key]: v })}
                                     />
                                     <div className="flex justify-between text-xs text-gray-300 mt-2">
                                         <span>{input.key === "annual_bill" ? "$" : ""}{input.min}</span>
@@ -147,7 +189,7 @@ export default function EnergyCalculator() {
                                         <Plane className="w-4 h-4 text-blue-600" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="text-sm font-semibold text-[#0A2F1F]">✈️ Vacation Mode Add-On</p>
+                                        <p className="text-sm font-semibold text-dark">✈️ Vacation Mode Add-On</p>
                                         <p className="text-xs text-gray-400">Optional — add your time away from home</p>
                                     </div>
                                 </div>
@@ -173,18 +215,18 @@ export default function EnergyCalculator() {
                                                                 <input.icon className="w-4 h-4 text-blue-600" />
                                                             </div>
                                                             <div>
-                                                                <p className="text-sm font-semibold text-[#0A2F1F]">{input.label}</p>
+                                                                <p className="text-sm font-semibold text-dark">{input.label}</p>
                                                                 <p className="text-xs text-gray-400">{input.description}</p>
                                                             </div>
                                                         </div>
-                                                        <span className="text-lg font-bold text-[#0A2F1F] shrink-0 ml-4">{values[input.key]}<span className="text-xs text-gray-400 ml-1">{input.unit}</span></span>
+                                                        <span className="text-lg font-bold text-dark shrink-0 ml-4">{values[input.key]}<span className="text-xs text-gray-400 ml-1">{input.unit}</span></span>
                                                     </div>
-                                                    <Slider 
-                                                        value={[values[input.key]]} 
-                                                        min={input.min} 
-                                                        max={input.max} 
+                                                    <Slider
+                                                        value={[values[input.key]]}
+                                                        min={input.min}
+                                                        max={input.max}
                                                         step={input.step}
-                                                        onValueChange={(v) => setValues({...values, [input.key]: v})}
+                                                        onValueChange={(v) => setValues({ ...values, [input.key]: v })}
                                                     />
                                                     <div className="flex justify-between text-xs text-gray-300 mt-1"><span>{input.min}</span><span>{input.max}</span></div>
                                                 </div>
@@ -202,7 +244,7 @@ export default function EnergyCalculator() {
 
                     {/* Results */}
                     <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-4 sticky top-8">
-                        <div className="bg-linear-to-br from-[#0A2F1F] to-[#14533B] rounded-3xl p-8 text-center">
+                        <div className="bg-linear-to-br from-dark to-[#14533B] rounded-3xl p-8 text-center">
                             <p className="text-white/50 text-sm uppercase tracking-wider mb-3">Nightly Schedule Savings</p>
                             <AnimatePresence mode="wait">
                                 <motion.div key={result.pct} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -253,10 +295,10 @@ export default function EnergyCalculator() {
                         )}
 
                         <div className="bg-white rounded-3xl p-6 border border-gray-100">
-                            <p className="text-sm font-semibold text-[#0A2F1F] mb-1">🇨🇦 Canada-Wide Potential</p>
+                            <p className="text-sm font-semibold text-dark mb-1">🇨🇦 Canada-Wide Potential</p>
                             <p className="text-gray-400 text-xs mb-3">If every eligible Canadian home used the same nightly settings:</p>
                             <div className="flex items-end gap-2">
-                                <p className="text-4xl font-bold text-[#0A2F1F]">{result.canadaWide.toLocaleString()}</p>
+                                <p className="text-4xl font-bold text-dark">{result.canadaWide.toLocaleString()}</p>
                                 <p className="text-gray-400 text-sm mb-1">megatonnes CO₂/yr avoided</p>
                             </div>
                             <p className="text-xs text-gray-400 mt-2">Based on 14 million programmable-thermostat homes in Canada.</p>
