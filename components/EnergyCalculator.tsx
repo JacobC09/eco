@@ -85,17 +85,12 @@ const vacationInputs: SliderInput[] = [
 ];
 
 export default function EnergyCalculator() {
-    const [values, setValues] = useState(DEFAULTS);
+    const [values, setValues] = useState<EnergyCalculatorValues>(DEFAULTS);
     const [vacationOpen, setVacationOpen] = useState(false);
     const result = calcSavings(values);
-    const reset = () => setValues(DEFAULTS);
 
     return (
         <section id="calculator" className="py-24 px-6 md:px-12 bg-[#FAFAF7]">
-            <p>slider</p>
-            <Slider defaultValue={[33]} max={100} step={1} />
-            <p>slider</p>
-
             <div className="max-w-7xl mx-auto">
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
                     <span className="text-emerald-600 text-sm font-medium tracking-[0.2em] uppercase">Your Impact</span>
@@ -106,13 +101,12 @@ export default function EnergyCalculator() {
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 gap-10 items-start">
-                    {/* Inputs */}
                     <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-4">
                         <div className="bg-white rounded-3xl p-8 border border-gray-100 space-y-7">
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">🌙 Nightly Schedule</p>
                             {nightInputs.map((input) => (
-                                <div key={input.key}>
-                                    <div className="flex items-center justify-between mb-2">
+                                <div key={input.key} className="">
+                                    <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-2">
                                             <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                                                 <input.icon className="w-4 h-4 text-emerald-600" />
@@ -132,8 +126,9 @@ export default function EnergyCalculator() {
                                         min={input.min} 
                                         max={input.max} 
                                         step={input.step}
-                                    ></Slider> 
-                                    <div className="flex justify-between text-xs text-gray-300 mt-1">
+                                        onValueChange={(v) => setValues({...values, [input.key]: v})}
+                                    />
+                                    <div className="flex justify-between text-xs text-gray-300 mt-2">
                                         <span>{input.key === "annual_bill" ? "$" : ""}{input.min}</span>
                                         <span>{input.key === "annual_bill" ? "$" : ""}{input.max}</span>
                                     </div>
@@ -189,7 +184,8 @@ export default function EnergyCalculator() {
                                                         min={input.min} 
                                                         max={input.max} 
                                                         step={input.step}
-                                                    ></Slider>
+                                                        onValueChange={(v) => setValues({...values, [input.key]: v})}
+                                                    />
                                                     <div className="flex justify-between text-xs text-gray-300 mt-1"><span>{input.min}</span><span>{input.max}</span></div>
                                                 </div>
                                             ))}
@@ -199,7 +195,7 @@ export default function EnergyCalculator() {
                             </AnimatePresence>
                         </div>
 
-                        <button onClick={reset} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 transition-colors px-2">
+                        <button onClick={() => setValues(DEFAULTS)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 transition-colors px-2">
                             <RefreshCw className="w-3.5 h-3.5" /> Reset to Canadian averages
                         </button>
                     </motion.div>
