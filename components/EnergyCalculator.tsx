@@ -138,7 +138,7 @@ export default function EnergyCalculator() {
                     <span className="text-emerald-600 text-sm font-medium tracking-[0.2em] uppercase">Your Impact</span>
                     <h2 className="text-3xl md:text-5xl font-bold text-dark mt-3 tracking-tight">Thermostat Savings Calculator</h2>
                     <p className="text-gray-500 mt-4 max-w-xl mx-auto leading-relaxed">
-                        Enter your home details to see exactly how much energy, money, and CO₂ you'd save by programming a nightly setback — plus an optional vacation add-on.
+                        Enter your home details to see exactly how much energy, money, and CO₂ you'd save by programming a nightly setback.
                     </p>
                 </motion.div>
 

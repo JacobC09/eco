@@ -103,7 +103,7 @@ export default function CommunityPledge() {
                                     </div>
                                     <div>
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Message (optional)</label>
-                                        <textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="I purchased a smart thermostat and lowered my energy bill by 20%!" rows={3} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-emerald-400 bg-white resize-none" />
+                                        <textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="e. g. I purchased a smart thermostat and lowered my energy bill by 20%!" rows={3} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-emerald-400 bg-white resize-none" />
                                     </div>
                                     <button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-400 text-white font-semibold py-3 rounded-xl text-sm transition-colors">
                                         {isSubmitting ? "Submitting..." : "Submit My Action"}
@@ -164,7 +164,7 @@ export default function CommunityPledge() {
                                                         )}
                                                         {entry.date && <span className="text-xs text-gray-300">{entry.date}</span>}
                                                     </div>
-                                                    {entry.message && <p className="text-xs text-gray-500 leading-relaxed italic">"{entry.message}"</p>}
+                                                    {entry.message && <p className="text-xs text-gray-500 leading-relaxed">{entry.message}</p>}
                                                 </div>
                                                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
                                             </div>

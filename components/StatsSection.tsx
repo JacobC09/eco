@@ -55,11 +55,11 @@ export default function StatsSection() {
                         By The Numbers
                     </span>
                     <h2 className="text-3xl md:text-5xl font-bold  text-dark mt-3 tracking-tight">
-                        The Impact Is Real
+                        Statistics
                     </h2>
-                    <p className="text-gray-500 mt-4 max-w-lg mx-auto leading-relaxed">
-                        These aren't projections — they're what happens when communities commit to smarter heating habits.
-                    </p>
+                    {/* <p className="text-gray-500 mt-4 max-w-lg mx-auto leading-relaxed">
+                        
+                    </p> */}
                 </motion.div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
