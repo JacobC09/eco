@@ -110,12 +110,13 @@ function calcSavings({
         
         totalDollars: Math.round(dollarSavings + vacDollars),
         totalCO2: Math.round(co2Savings + vacCO2),
+        baselineCO2: Math.round(baselineCO2),
     };
 }
 
 const nightInputs: SliderInput[] = [
     { key: "home_size", icon: Home, label: "Home Size", unit: "sq ft", min: 500, max: 5000, step: 100, description: "Approximate size of your home" },
-    { key: "setback_temp", icon: Thermometer, label: "Nightly Setback", unit: "°C lower", min: 1, max: 8, step: 0.5, description: "Degrees lower at night" },
+    { key: "setback_temp", icon: Thermometer, label: "Nightly Setback", unit: "°C lower", min: 0, max: 8, step: 0.5, description: "Degrees lower at night" },
     { key: "setback_hours", icon: Clock, label: "Hours per Night", unit: "hrs", min: 4, max: 12, step: 1, description: "How long the lower temp runs" },
     { key: "heating_months", icon: Thermometer, label: "Heating Season", unit: "months", min: 3, max: 10, step: 1, description: "Months per year you use heat" },
     { key: "annual_bill", icon: DollarSign, label: "Annual Heating Bill", unit: "CAD $", min: 400, max: 5000, step: 50, description: "Your estimated annual heating cost" },
@@ -145,7 +146,7 @@ export default function EnergyCalculator() {
                 <div className="grid md:grid-cols-2 gap-10 items-start">
                     <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-4">
                         <div className="bg-white rounded-3xl p-8 border border-gray-100 space-y-7">
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">🌙 Nightly Schedule</p>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Nightly Schedule</p>
                             {nightInputs.map((input) => (
                                 <div key={input.key} className="">
                                     <div className="flex items-center justify-between mb-4">
@@ -268,6 +269,10 @@ export default function EnergyCalculator() {
                                     <p className="text-emerald-300 text-sm">Like planting <strong>{result.trees.toLocaleString()} trees</strong> every year</p>
                                 </div>
                             )}
+                            <div className="flex items-end gap-2 mt-4 justify-center">
+                                <p className="text-gray-400 text-xl font-bold">{result.baselineCO2}</p>
+                                <p className="text-gray-400 text-sm mb-1">kg CO₂/yr (baseline)</p>
+                            </div>
                         </div>
 
                         {/* Vacation results (only if enabled) */}
@@ -295,7 +300,7 @@ export default function EnergyCalculator() {
                         )}
 
                         <div className="bg-white rounded-3xl p-6 border border-gray-100">
-                            <p className="text-sm font-semibold text-dark mb-1">🇨🇦 Canada-Wide Potential</p>
+                            <p className="text-sm font-semibold text-dark mb-1">Canada-Wide Potential</p>
                             <p className="text-gray-400 text-xs mb-3">If every eligible Canadian home used the same nightly settings:</p>
                             <div className="flex items-end gap-2">
                                 <p className="text-4xl font-bold text-dark">{result.canadaWide.toLocaleString()}</p>

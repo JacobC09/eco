@@ -142,7 +142,7 @@ export default function CommunityPledge() {
                                 ))
                             ) : (
                                 entries.length === 0 ? <p className="text-gray-400">No entries yet. Stay tuned!</p> : (
-                                    entries.slice(0, 8).map((entry, i) => (
+                                    entries.map((entry, i) => (
                                         <motion.div
                                             key={entry.id}
                                             initial={{ opacity: 0, y: 10 }}

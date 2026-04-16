@@ -25,12 +25,12 @@ export async function fetchEntries(): Promise<SheetEntry[]> {
     try {
         const res = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.GOOGLE_SHEET_ID,
-            range: "Sheet1!A2:D100",
+            range: "Sheet1!A2:D",
         });
 
         const rows = res.data.values || [];
-        
-        return rows
+
+        const filtered = rows
             .filter(row => row.length >= 4)
             .map((row: string[], index: number) => ({
                 id: `gs-${index}`,
@@ -39,6 +39,9 @@ export async function fetchEntries(): Promise<SheetEntry[]> {
                 message: row[2],
                 date: row[3]
             }));
+            
+        return filtered;
+
 
     } catch (e) {
         console.error("Error fetching from Google Sheets:", e);

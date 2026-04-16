@@ -79,7 +79,7 @@ export default function HeroSection() {
                             transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
                             style={{ backgroundSize: "200% 200%" }}
                         >
-                            Cold.
+                            Cool,
                         </motion.span>
                         <br />
                         <span className="text-white/90">Save the Planet.</span>

@@ -12,7 +12,7 @@ const font = Inter({
 });
 
 export const metadata: Metadata = {
-    title: "Thermostat Awareness Initiative",
+    title: "Sleep Cool, Save the Planet",
     description: "A Generation Green Project helping educate Canadian families on how to optimize their home heating schedules to save energy, reduce emissions, and improve sleep quality.",
 };
 
